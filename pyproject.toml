@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scitex-db"
+version = "1.0.0"
+description = "Database utilities for scientific computing with SQLite3 and PostgreSQL"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
+]
+keywords = [
+    "database",
+    "sqlite3",
+    "postgresql",
+    "scientific-computing",
+    "numpy-arrays",
+    "data-storage"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+]
+
+[project.urls]
+Homepage = "https://github.com/ywatanabe1989/scitex-db"
+Repository = "https://github.com/ywatanabe1989/scitex-db"
+"Bug Tracker" = "https://github.com/ywatanabe1989/scitex-db/issues"
+
+[project.optional-dependencies]
+postgresql = [
+    "psycopg2-binary",
+    "sqlalchemy",
+]
+
+git = [
+    "GitPython",
+]
+
+all = [
+    "psycopg2-binary",
+    "sqlalchemy",
+    "GitPython",
+]
+
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "black>=22.0",
+    "mypy>=0.950",
+]
+
+[project.scripts]
+scitex-db = "scitex_db.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scitex_db"]

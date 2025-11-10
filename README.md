@@ -1,0 +1,159 @@
+# scitex-db
+
+Database utilities for scientific computing.
+
+## Overview
+
+`scitex-db` provides enhanced database operations designed for scientific research:
+
+### Features
+
+**SQLite3 with Scientific Extensions:**
+- 📊 **Array Storage** - Store/retrieve NumPy arrays efficiently
+- 🔬 **Blob Storage** - Serialize Python objects with metadata
+- 📦 **Batch Operations** - High-performance bulk inserts
+- 🔍 **Advanced Queries** - Scientific query patterns
+- 🗂️ **Git Integration** - Version control for databases
+- 📤 **Import/Export** - CSV, JSON, DataFrame conversions
+- 🔧 **Maintenance Tools** - Health checks, deduplication
+
+**PostgreSQL Support:**
+- Full-featured PostgreSQL wrapper
+- Optimized for scientific datasets
+
+**CLI Tools:**
+```bash
+scitex-db inspect database.db
+scitex-db health database.db --fix
+```
+
+## Installation
+
+```bash
+pip install scitex-db
+```
+
+For PostgreSQL:
+```bash
+pip install scitex-db[postgresql]
+```
+
+For all features:
+```bash
+pip install scitex-db[all]
+```
+
+## Quick Start
+
+### Basic Usage
+
+```python
+from scitex_db import SQLite3
+
+# Initialize
+db = SQLite3("experiments.db")
+
+# Create table
+db.create_table("results", {
+    "id": "INTEGER PRIMARY KEY",
+    "experiment": "TEXT",
+    "accuracy": "REAL"
+})
+
+# Insert data
+db.insert_many("results", [
+    {"experiment": "exp1", "accuracy": 0.95},
+    {"experiment": "exp2", "accuracy": 0.92}
+])
+
+# Query
+results = db.get_rows("results", where="accuracy > 0.9")
+print(results)
+```
+
+### Array Storage
+
+```python
+import numpy as np
+
+# Save arrays
+data = np.random.rand(1000, 50)
+db.save_array("features", data,
+              column="embeddings",
+              additional_columns={"model": "bert"})
+
+# Load arrays
+loaded = db.load_array("features", "embeddings",
+                       where="model = 'bert'")
+```
+
+### Blob Storage
+
+```python
+# Store arbitrary objects
+model = {"weights": np.random.rand(100), "config": {...}}
+db.save_blob("models", model,
+             column="checkpoint",
+             additional_columns={"epoch": 10})
+
+# Retrieve
+model = db.load_blob("models", "checkpoint", where="epoch = 10")
+```
+
+### Git Integration
+
+```python
+from scitex_db import SQLite3
+
+db = SQLite3("versioned.db")
+db.init_git()  # Initialize git tracking
+
+# Automatic commits on changes
+db.insert("results", {"value": 42})
+# Commits with message: "Insert 1 row(s) into results"
+```
+
+## Advanced Features
+
+### Transaction Management
+
+```python
+with db.transaction():
+    db.insert("table1", {...})
+    db.insert("table2", {...})
+    # Auto-commit on success, rollback on error
+```
+
+### Batch Operations
+
+```python
+# High-performance bulk insert
+large_dataset = [{"id": i, "value": i**2} for i in range(10000)]
+db.insert_many("data", large_dataset, batch_size=1000)
+```
+
+### Database Inspection
+
+```python
+# Get comprehensive summary
+db.summary  # or db()
+
+# Inspect specific table
+db.inspect_table("results")
+
+# Health check
+from scitex_db import check_health
+check_health("database.db", fix_issues=True)
+```
+
+## Part of SciTeX Ecosystem
+
+- `scitex-core` - Core infrastructure
+- `scitex-io` - Data I/O (can use scitex-db)
+- `scitex-writer` - Academic writing
+- `scitex-scholar` - Paper management
+- `scitex` - Main package
+
+## License
+
+MIT License - see LICENSE file for details.
