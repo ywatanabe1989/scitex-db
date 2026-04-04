@@ -16,7 +16,7 @@ from typing import Any as _Any
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
-from scitex import logging
+import logging
 
 logger = logging.getLogger(__name__)
 
