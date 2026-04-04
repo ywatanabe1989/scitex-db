@@ -7,8 +7,8 @@ name = "scitex-db"
 version = "0.1.0"
 description = "Database utilities for scientific computing with SQLite3 and PostgreSQL"
 readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "MIT" }
+license = "AGPL-3.0"
+requires-python = ">=3.10"
 authors = [
     { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
 ]
@@ -22,15 +22,15 @@ keywords = [
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Environment :: Console",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Database",
     "Topic :: Scientific/Engineering",
 ]
@@ -40,11 +40,6 @@ dependencies = [
     "pandas",
     "scitex-core>=0.1.0",
 ]
-
-[project.urls]
-Homepage = "https://github.com/ywatanabe1989/scitex-db"
-Repository = "https://github.com/ywatanabe1989/scitex-db"
-"Bug Tracker" = "https://github.com/ywatanabe1989/scitex-db/issues"
 
 [project.optional-dependencies]
 postgresql = [
@@ -63,14 +58,36 @@ all = [
 ]
 
 dev = [
+    "scitex-dev",
     "pytest>=7.0",
-    "pytest-cov",
-    "black>=22.0",
-    "mypy>=0.950",
+    "pytest-cov>=4.0.0",
+    "pytest-xdist>=3.0.0",
+    "pre-commit>=3.5.0",
 ]
 
 [project.scripts]
 scitex-db = "scitex_db.__main__:main"
 
+[project.entry-points."scitex_dev.docs"]
+scitex-db = "scitex_db"
+
+[project.urls]
+Homepage = "https://github.com/ywatanabe1989/scitex-db"
+Repository = "https://github.com/ywatanabe1989/scitex-db.git"
+Issues = "https://github.com/ywatanabe1989/scitex-db/issues"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/scitex_db"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short --cov=scitex_db --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
