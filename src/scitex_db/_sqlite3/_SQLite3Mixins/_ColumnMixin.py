@@ -10,7 +10,7 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import time
-from scitex import logging
+import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)

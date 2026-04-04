@@ -12,7 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-from scitex import logging
+import logging
 
 logger = logging.getLogger(__name__)
 

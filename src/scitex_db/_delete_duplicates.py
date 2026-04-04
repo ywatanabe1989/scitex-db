@@ -4,6 +4,7 @@
 # File: ./src/scitex/db/_delete_duplicates.py
 # ----------------------------------------
 import os
+
 __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -14,23 +15,28 @@ The actual implementation has been moved to _sqlite3._delete_duplicates
 as it is SQLite3-specific.
 """
 
-from scitex_core.errors import warn_deprecated
+import warnings
+
 from ._sqlite3._delete_duplicates import delete_sqlite3_duplicates
+
 
 def delete_duplicates(*args, **kwargs):
     """
     Delete duplicate entries from an SQLite database table.
-    
-    .. deprecated:: 
+
+    .. deprecated::
         This function is deprecated as it's SQLite3-specific.
         Use scitex.db._sqlite3.delete_sqlite3_duplicates() instead.
     """
-    warn_deprecated(
-        old_function="scitex.db.delete_duplicates",
-        new_function="scitex.db._sqlite3.delete_sqlite3_duplicates",
-        version="3.0.0"
+    warnings.warn(
+        "scitex.db.delete_duplicates is deprecated. "
+        "Use scitex.db._sqlite3.delete_sqlite3_duplicates instead. "
+        "Will be removed in v3.0.0.",
+        DeprecationWarning,
+        stacklevel=2,
     )
     return delete_sqlite3_duplicates(*args, **kwargs)
+
 
 # Export for backward compatibility
 __all__ = ["delete_duplicates"]
