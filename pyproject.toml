@@ -71,6 +71,9 @@ scitex-db = "scitex_db.__main__:main"
 [project.entry-points."scitex_dev.docs"]
 scitex-db = "scitex_db"
 
+[project.entry-points."scitex_dev.skills"]
+scitex-db = "scitex_db"
+
 [project.urls]
 Homepage = "https://github.com/ywatanabe1989/scitex-db"
 Repository = "https://github.com/ywatanabe1989/scitex-db.git"
