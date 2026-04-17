@@ -1,159 +1,161 @@
 # scitex-db
 
-Database utilities for scientific computing.
+Database utilities for scientific computing with SQLite3 and PostgreSQL.
+
+Part of the [SciTeX ecosystem](https://github.com/ywatanabe1989).
 
 ## Overview
 
-`scitex-db` provides enhanced database operations designed for scientific research:
+`scitex-db` provides two database wrappers that share a mixin-based API, so
+most `create_table`, `insert_many`, `get_rows`, and transaction calls look the
+same on both backends. On top of that it adds a few scientific niceties:
 
-### Features
-
-**SQLite3 with Scientific Extensions:**
-- 📊 **Array Storage** - Store/retrieve NumPy arrays efficiently
-- 🔬 **Blob Storage** - Serialize Python objects with metadata
-- 📦 **Batch Operations** - High-performance bulk inserts
-- 🔍 **Advanced Queries** - Scientific query patterns
-- 🗂️ **Git Integration** - Version control for databases
-- 📤 **Import/Export** - CSV, JSON, DataFrame conversions
-- 🔧 **Maintenance Tools** - Health checks, deduplication
-
-**PostgreSQL Support:**
-- Full-featured PostgreSQL wrapper
-- Optimized for scientific datasets
-
-**CLI Tools:**
-```bash
-scitex-db inspect database.db
-scitex-db health database.db --fix
-```
+- **Numpy array storage (SQLite3)** — save/load `ndarray`s as BLOBs with
+  automatic `dtype` / `shape` metadata and optional zlib compression.
+- **Generic blob storage** — pickle-backed object store with metadata columns.
+- **Git versioning (SQLite3, optional)** — commit the `.db` file on change
+  via GitPython.
+- **Health checks & duplicate removal** — standalone helpers for SQLite3.
+- **Schema inspection** — one call returns a structural summary of a DB.
+- **CLI** — `scitex-db inspect` / `scitex-db health`.
 
 ## Installation
 
 ```bash
-pip install scitex-db
+pip install scitex-db                   # SQLite3 + core
+pip install scitex-db[postgresql]       # + psycopg2-binary, sqlalchemy
+pip install scitex-db[git]              # + GitPython (git versioning)
+pip install scitex-db[all]              # everything above
 ```
 
-For PostgreSQL:
-```bash
-pip install scitex-db[postgresql]
-```
-
-For all features:
-```bash
-pip install scitex-db[all]
-```
+Python >= 3.10.
 
 ## Quick Start
 
-### Basic Usage
+### SQLite3 (context manager required)
 
 ```python
 from scitex_db import SQLite3
 
-# Initialize
-db = SQLite3("experiments.db")
-
-# Create table
-db.create_table("results", {
-    "id": "INTEGER PRIMARY KEY",
-    "experiment": "TEXT",
-    "accuracy": "REAL"
-})
-
-# Insert data
-db.insert_many("results", [
-    {"experiment": "exp1", "accuracy": 0.95},
-    {"experiment": "exp2", "accuracy": 0.92}
-])
-
-# Query
-results = db.get_rows("results", where="accuracy > 0.9")
-print(results)
+with SQLite3("experiments.db", compress_by_default=True) as db:
+    db.create_table(
+        "results",
+        {"id": "INTEGER PRIMARY KEY", "experiment": "TEXT", "accuracy": "REAL"},
+    )
+    db.insert_many("results", [
+        {"experiment": "exp1", "accuracy": 0.95},
+        {"experiment": "exp2", "accuracy": 0.92},
+    ])
+    rows = db.get_rows("results", where="accuracy > 0.9")
+    print(rows)
 ```
 
-### Array Storage
+### Numpy array storage
 
 ```python
 import numpy as np
-
-# Save arrays
-data = np.random.rand(1000, 50)
-db.save_array("features", data,
-              column="embeddings",
-              additional_columns={"model": "bert"})
-
-# Load arrays
-loaded = db.load_array("features", "embeddings",
-                       where="model = 'bert'")
-```
-
-### Blob Storage
-
-```python
-# Store arbitrary objects
-model = {"weights": np.random.rand(100), "config": {...}}
-db.save_blob("models", model,
-             column="checkpoint",
-             additional_columns={"epoch": 10})
-
-# Retrieve
-model = db.load_blob("models", "checkpoint", where="epoch = 10")
-```
-
-### Git Integration
-
-```python
 from scitex_db import SQLite3
 
-db = SQLite3("versioned.db")
-db.init_git()  # Initialize git tracking
-
-# Automatic commits on changes
-db.insert("results", {"value": 42})
-# Commits with message: "Insert 1 row(s) into results"
+with SQLite3("features.db", compress_by_default=True) as db:
+    db.create_table(
+        "features",
+        {"id": "INTEGER PRIMARY KEY", "model": "TEXT", "embeddings": "BLOB"},
+    )
+    db.save_array(
+        table_name="features",
+        data=np.random.rand(1000, 50),
+        column="embeddings",
+        additional_columns={"model": "bert"},
+    )
+    arr = db.load_array("features", column="embeddings",
+                        where="model = 'bert'")
 ```
 
-## Advanced Features
-
-### Transaction Management
+### Blob storage
 
 ```python
-with db.transaction():
-    db.insert("table1", {...})
-    db.insert("table2", {...})
-    # Auto-commit on success, rollback on error
+with SQLite3("models.db") as db:
+    db.create_table("models",
+                    {"id": "INTEGER PRIMARY KEY", "epoch": "INTEGER", "checkpoint": "BLOB"})
+    db.save_blob("models", data={"weights": arr, "config": {...}},
+                 column="checkpoint", additional_columns={"epoch": 10})
+    obj = db.load_blob("models", column="checkpoint", where="epoch = 10")
 ```
 
-### Batch Operations
+### Git integration (optional)
+
+Requires `pip install scitex-db[git]`.
 
 ```python
-# High-performance bulk insert
-large_dataset = [{"id": i, "value": i**2} for i in range(10000)]
-db.insert_many("data", large_dataset, batch_size=1000)
+with SQLite3("versioned.db") as db:
+    db.git_init()
+    db.insert_many("results", [{"value": 42}])
+    db.git_commit(message="Snapshot after run")
+    db.git_log(limit=5)
 ```
 
-### Database Inspection
+### Transactions & batch operations
 
 ```python
-# Get comprehensive summary
-db.summary  # or db()
+with SQLite3("data.db") as db:
+    with db.transaction():
+        db.insert_many("a", [...])
+        db.insert_many("b", [...])  # auto-rollback on exception
 
-# Inspect specific table
-db.inspect_table("results")
+    db.insert_many("data", [{"id": i, "value": i**2} for i in range(10_000)])
+```
 
-# Health check
-from scitex_db import check_health
-check_health("database.db", fix_issues=True)
+### Inspection & health
+
+```python
+from scitex_db import inspect, check_health, batch_health_check
+
+info = inspect("experiments.db")                         # dict summary
+report = check_health("experiments.db", fix_issues=True) # single DB
+all_reports = batch_health_check(["a.db", "b.db"])       # many
+```
+
+### PostgreSQL
+
+```python
+from scitex_db import PostgreSQL
+
+db = PostgreSQL(dbname="mydb", user="u", password="p",
+                host="localhost", port=5432)
+db.connect()
+db.insert("experiments", {"name": "run_42", "status": "running"})
+rows = db.select("experiments", where="status = 'running'", limit=100)
+db.close()
+```
+
+## CLI
+
+```bash
+scitex-db inspect database.db [--tables t1 t2] [--quiet]
+scitex-db health db1.db [db2.db ...] [--fix] [--quiet]
+```
+
+## Public API
+
+```python
+from scitex_db import (
+    SQLite3,
+    PostgreSQL,
+    inspect,
+    check_health,
+    batch_health_check,
+    delete_duplicates,            # deprecated alias
+    delete_sqlite3_duplicates,
+)
 ```
 
 ## Part of SciTeX Ecosystem
 
-- `scitex-core` - Core infrastructure
-- `scitex-io` - Data I/O (can use scitex-db)
-- `scitex-writer` - Academic writing
-- `scitex-scholar` - Paper management
-- `scitex` - Main package
+- `scitex-core` — core infrastructure
+- `scitex-io` — data I/O (30+ formats)
+- `scitex-db` — this package
+- `scitex` — umbrella package that re-exports `scitex_db` as `scitex.db`
 
 ## License
 
-MIT License - see LICENSE file for details.
+AGPL-3.0 — see [LICENSE](LICENSE).
