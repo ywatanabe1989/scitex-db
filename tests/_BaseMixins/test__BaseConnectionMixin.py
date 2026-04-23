@@ -50,9 +50,12 @@ class TestBaseConnectionMixin:
         """Test initialization of BaseConnectionMixin."""
         mixin = ConcreteConnectionMixin()
 
-        # Verify attributes
-        assert isinstance(mixin.lock, threading.Lock)
-        assert isinstance(mixin._maintenance_lock, threading.Lock)
+        # threading.Lock is a factory, not a class, so isinstance() doesn't
+        # apply directly. Check the lock API instead (acquire/release).
+        assert hasattr(mixin.lock, "acquire") and hasattr(mixin.lock, "release")
+        assert hasattr(mixin._maintenance_lock, "acquire") and hasattr(
+            mixin._maintenance_lock, "release"
+        )
         assert mixin.conn is None
         assert mixin.cursor is None
 
