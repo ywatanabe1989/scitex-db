@@ -7,9 +7,18 @@ import os
 __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
-"""Database operations module for scitex."""
+"""Database operations module for scitex.
 
-from ._postgresql._PostgreSQL import PostgreSQL
+PostgreSQL support is optional and requires ``psycopg2``; it is imported
+lazily so that installing ``scitex-db`` without the ``[postgres]`` extra
+still exposes ``SQLite3`` and friends.
+"""
+
+try:
+    from ._postgresql._PostgreSQL import PostgreSQL
+except ImportError:  # psycopg2 not installed
+    PostgreSQL = None  # type: ignore[assignment]
+
 from ._sqlite3._SQLite3 import SQLite3
 from ._sqlite3._delete_duplicates import delete_sqlite3_duplicates
 from ._delete_duplicates import delete_duplicates
