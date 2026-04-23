@@ -2,6 +2,14 @@
 
 Database utilities for scientific computing.
 
+## Problem and Solution
+
+
+| # | Problem | Solution |
+|---|---------|----------|
+| 1 | **Storing ndarrays in SQLite means `pickle.dumps → BLOB`** -- no compression, no type info, no deterministic hashing | **`SQLite3.save_array(name, arr)` / `load_array(name)`** -- compressed BLOB storage with typed round-trip; compatible with pandas via `to_df` |
+| 2 | **`sqlite3` API is low-level** -- every project re-writes connect/transaction/execute boilerplate | **`with db:` context-manager transactions** -- health checks, duplicate removal, schema inspection built in |
+
 ## Overview
 
 `scitex-db` provides enhanced database operations designed for scientific research:
