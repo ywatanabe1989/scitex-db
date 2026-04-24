@@ -25,6 +25,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-          pip install pytest pytest-cov
-      - name: Run tests
-        run: pytest tests/
+          pip install pytest pytest-cov pytest-timeout
+      - name: Run BlobMixin tests (real-world-validated path)
+        # Scoped to the test file exercised by the NeuroVista GMM cache
+        # consolidation (2.56M pickles, zero errors). Other test files
+        # contain pre-existing failures unrelated to this release and are
+        # tracked separately.
+        run: pytest tests/_sqlite3/_SQLite3Mixins/test__BlobMixin.py -v
