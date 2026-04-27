@@ -1,6 +1,19 @@
 # scitex-db
 
+<!-- scitex-badges:start -->
+[![PyPI](https://img.shields.io/pypi/v/scitex-db.svg)](https://pypi.org/project/scitex-db/)
+[![Python](https://img.shields.io/pypi/pyversions/scitex-db.svg)](https://pypi.org/project/scitex-db/)
+[![Tests](https://github.com/ywatanabe1989/scitex-db/actions/workflows/test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-db/actions/workflows/test.yml)
+[![Install Test](https://github.com/ywatanabe1989/scitex-db/actions/workflows/install-test.yml/badge.svg)](https://github.com/ywatanabe1989/scitex-db/actions/workflows/install-test.yml)
+[![Coverage](https://codecov.io/gh/ywatanabe1989/scitex-db/graph/badge.svg)](https://codecov.io/gh/ywatanabe1989/scitex-db)
+[![Docs](https://readthedocs.org/projects/scitex-db/badge/?version=latest)](https://scitex-db.readthedocs.io/en/latest/)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+<!-- scitex-badges:end -->
+
+
 Database utilities for scientific computing.
+
+> **Interfaces:** Python ⭐⭐⭐ (primary) · CLI ⭐ · MCP — · Skills ⭐⭐ · Hook — · HTTP —
 
 ## Problem and Solution
 
