@@ -19,3 +19,5 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+docs/sphinx/_build/
