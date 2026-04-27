@@ -164,7 +164,7 @@ class _ArrayMixin:
             self.execute(query, tuple(all_values))
 
             if verbose:
-                logger.success(
+                logger.info(
                     f"Saved {len(data)} arrays to `{table_name}` table "
                     f"in `{self.db_path}`"
                 )
