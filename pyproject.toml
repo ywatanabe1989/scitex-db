@@ -42,27 +42,30 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+git = [
+    "GitPython",
+]
 postgresql = [
     "psycopg2-binary",
     "sqlalchemy",
 ]
-
-git = [
-    "GitPython",
-]
-
-all = [
-    "psycopg2-binary",
-    "sqlalchemy",
-    "GitPython",
-]
-
 dev = [
     "scitex-dev",
     "pytest>=7.0",
     "pytest-cov>=4.0.0",
     "pytest-xdist>=3.0.0",
     "pre-commit>=3.5.0",
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+    "sphinx-autodoc-typehints>=1.25",
+]
+all = [
+    "scitex-db[git]",
+    "scitex-db[postgresql]",
 ]
 
 [project.scripts]
