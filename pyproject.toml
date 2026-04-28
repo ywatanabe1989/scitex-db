@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-db"
-version = "0.1.5"
+version = "0.1.6"
 description = "Database utilities for scientific computing with SQLite3 and PostgreSQL"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -39,6 +39,7 @@ dependencies = [
     "numpy",
     "pandas",
     "scitex-core>=0.1.0",
+    "scitex",
 ]
 
 [project.optional-dependencies]
