@@ -4,7 +4,9 @@
 # File: /ssh:sp:/home/ywatanabe/proj/scitex_repo/src/scitex/db/_sqlite3/_SQLite3Mixins/_QueryMixin.py
 # ----------------------------------------
 from __future__ import annotations
+
 import os
+
 __FILE__ = __file__
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -21,10 +23,7 @@ class _QueryMixin:
     def _sanitize_parameters(self, parameters):
         """Convert pandas Timestamp objects to strings"""
         if isinstance(parameters, (list, tuple)):
-            return [
-                str(p) if isinstance(p, pd.Timestamp) else p
-                for p in parameters
-            ]
+            return [str(p) if isinstance(p, pd.Timestamp) else p for p in parameters]
         return parameters
 
     def execute(self, query: str, parameters: Tuple = ()) -> None:
@@ -55,6 +54,10 @@ class _QueryMixin:
                 self.cursor.execute("PRAGMA wal_checkpoint(PASSIVE)")
                 # self.cursor.execute("PRAGMA wal_checkpoint(FULL)")
             return self.cursor
+        except sqlite3.IntegrityError:
+            # Preserve IntegrityError so callers can catch it specifically
+            # (e.g. UNIQUE/FOREIGN KEY constraint violations).
+            raise
         except sqlite3.Error as err:
             raise sqlite3.Error(f"Query execution failed: {err}")
 
@@ -80,6 +83,8 @@ class _QueryMixin:
             parameters = [self._sanitize_parameters(p) for p in parameters]
             self.cursor.executemany(query, parameters)
             self.conn.commit()
+        except sqlite3.IntegrityError:
+            raise
         except sqlite3.Error as err:
             raise sqlite3.Error(f"Batch query execution failed: {err}")
 
@@ -104,7 +109,10 @@ class _QueryMixin:
         try:
             self.cursor.executescript(script)
             self.conn.commit()
+        except sqlite3.IntegrityError:
+            raise
         except sqlite3.Error as err:
             raise sqlite3.Error(f"Script execution failed: {err}")
+
 
 # EOF

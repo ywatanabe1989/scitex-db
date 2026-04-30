@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-db"
-version = "0.1.3"
+version = "0.1.7"
 description = "Database utilities for scientific computing with SQLite3 and PostgreSQL"
 readme = "README.md"
-license = "AGPL-3.0"
+license = "AGPL-3.0-only"
 requires-python = ">=3.10"
 authors = [
     { name = "Yusuke Watanabe", email = "ywatanabe@scitex.ai" }
@@ -24,7 +24,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -39,30 +38,34 @@ dependencies = [
     "numpy",
     "pandas",
     "scitex-core>=0.1.0",
+    "scitex",
 ]
 
 [project.optional-dependencies]
+git = [
+    "GitPython",
+]
 postgresql = [
     "psycopg2-binary",
     "sqlalchemy",
 ]
-
-git = [
-    "GitPython",
-]
-
-all = [
-    "psycopg2-binary",
-    "sqlalchemy",
-    "GitPython",
-]
-
 dev = [
     "scitex-dev",
     "pytest>=7.0",
     "pytest-cov>=4.0.0",
     "pytest-xdist>=3.0.0",
     "pre-commit>=3.5.0",
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+    "sphinx-autodoc-typehints>=1.25",
+]
+all = [
+    "scitex-db[git]",
+    "scitex-db[postgresql]",
 ]
 
 [project.scripts]

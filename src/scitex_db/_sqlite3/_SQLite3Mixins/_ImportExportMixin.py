@@ -3,15 +3,11 @@
 # Time-stamp: "2024-11-25 01:36:18 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/db/_SQLite3Mixins/_ImportExportMixin.py
 
-THIS_FILE = (
-    "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_ImportExportMixin.py"
-)
+THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_ImportExportMixin.py"
 
 from typing import List
 
 import pandas as pd
-
-from ..._BaseMixins._BaseImportExportMixin import _BaseImportExportMixin
 
 
 class _ImportExportMixin:
@@ -27,7 +23,14 @@ class _ImportExportMixin:
     ) -> None:
         with self.transaction():
             try:
+                # Determine target table columns so we can drop CSV columns
+                # the table doesn't have (e.g. exporting an `id` PRIMARY KEY
+                # and importing into a table without that column).
+                target_cols = set(self.get_table_schema(table_name)["name"].tolist())
                 for chunk in pd.read_csv(csv_path, chunksize=chunk_size):
+                    extra = [c for c in chunk.columns if c not in target_cols]
+                    if extra:
+                        chunk = chunk.drop(columns=extra)
                     chunk.to_sql(
                         table_name,
                         self.conn,
@@ -45,10 +48,15 @@ class _ImportExportMixin:
         self,
         table_name: str,
         output_path: str,
-        columns: List[str] = ["*"],
+        columns: List[str] = None,
         where: str = None,
         batch_size: int = 10_000,
     ) -> None:
+        # When the caller passes ["*"] (or no value), select all columns by
+        # leaving columns=None so get_rows emits SELECT * — passing ["*"]
+        # would produce SELECT "*" and a CSV with a literal "*" header.
+        if columns is None or columns == ["*"]:
+            columns = None
         try:
             df = self.get_rows(
                 columns=columns,

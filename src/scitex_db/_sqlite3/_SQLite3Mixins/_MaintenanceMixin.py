@@ -10,11 +10,9 @@ THIS_FILE = (
 import contextlib
 import os
 import sqlite3
-from typing import Callable
-from typing import ContextManager, Dict, List, Optional
-import pandas as pd
+from typing import Callable, ContextManager, Dict, List, Optional
 
-from ..._BaseMixins._BaseMaintenanceMixin import _BaseMaintenanceMixin
+import pandas as pd
 
 
 class _MaintenanceMixin:
@@ -51,13 +49,22 @@ class _MaintenanceMixin:
             except (sqlite3.Error, Exception) as err:
                 raise ValueError(f"Failed to create backup: {err}")
 
+    def _vacuum_unlocked(self, into: Optional[str] = None) -> None:
+        # VACUUM cannot run inside a transaction. Commit any pending
+        # implicit/explicit transaction, then run VACUUM directly on the
+        # raw cursor (bypassing self.execute, whose _check_writable path
+        # can itself open an implicit transaction).
+        if self.conn is not None and self.conn.in_transaction:
+            self.conn.commit()
+        if into:
+            self.cursor.execute(f"VACUUM INTO '{into}'")
+        else:
+            self.cursor.execute("VACUUM")
+
     def vacuum(self, into: Optional[str] = None) -> None:
         with self.maintenance_lock():
             try:
-                if into:
-                    self.execute(f"VACUUM INTO '{into}'")
-                else:
-                    self.execute("VACUUM")
+                self._vacuum_unlocked(into=into)
             except sqlite3.Error as err:
                 raise ValueError(f"Vacuum operation failed: {err}")
 
@@ -65,7 +72,9 @@ class _MaintenanceMixin:
         with self.maintenance_lock():
             try:
                 self.execute("PRAGMA optimize")
-                self.vacuum()
+                # Run VACUUM without re-entering the (non-reentrant)
+                # maintenance lock.
+                self._vacuum_unlocked()
                 if analyze:
                     self.execute("ANALYZE")
             except sqlite3.Error as err:

@@ -3,9 +3,7 @@
 # Time-stamp: "2024-11-24 22:08:33 (ywatanabe)"
 # File: ./scitex_repo/src/scitex/db/_Basemodules/_BaseTransactionMixin.py
 
-THIS_FILE = (
-    "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_Basemodules/_BaseTransactionMixin.py"
-)
+THIS_FILE = "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_Basemodules/_BaseTransactionMixin.py"
 
 
 #!/usr/bin/env python3
@@ -17,8 +15,12 @@ import contextlib
 class _BaseTransactionMixin:
     @contextlib.contextmanager
     def transaction(self):
+        # If begin() itself fails (e.g. nested transaction), let the error
+        # propagate without invoking rollback() — there's nothing to roll
+        # back from this frame, and rollback() may itself raise because no
+        # transaction was started here.
+        self.begin()
         try:
-            self.begin()
             yield
             self.commit()
         except Exception as e:

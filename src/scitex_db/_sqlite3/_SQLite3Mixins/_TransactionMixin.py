@@ -7,9 +7,8 @@ THIS_FILE = (
     "/home/ywatanabe/proj/scitex_repo/src/scitex/db/_SQLite3Mixins/_TransactionMixin.py"
 )
 
-import sqlite3
 import contextlib
-from ..._BaseMixins._BaseTransactionMixin import _BaseTransactionMixin
+import sqlite3
 
 
 class _TransactionMixin:
@@ -18,8 +17,8 @@ class _TransactionMixin:
     @contextlib.contextmanager
     def transaction(self):
         with self.lock:
+            self.begin()
             try:
-                self.begin()
                 yield
                 self.commit()
             except Exception as e:
@@ -27,6 +26,13 @@ class _TransactionMixin:
                 raise e
 
     def begin(self) -> None:
+        # Python's sqlite3 module opens an implicit transaction before any
+        # DML statement when isolation_level is not None. Commit any such
+        # pending implicit transaction before starting a new explicit one,
+        # otherwise SQLite raises "cannot start a transaction within a
+        # transaction".
+        if self.conn is not None and self.conn.in_transaction:
+            self.conn.commit()
         self.execute("BEGIN TRANSACTION")
 
     def commit(self) -> None:
