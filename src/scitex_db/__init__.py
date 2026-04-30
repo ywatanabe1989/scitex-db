@@ -1,3 +1,13 @@
+try:
+    from importlib.metadata import version as _v, PackageNotFoundError
+    try:
+        __version__ = _v("scitex-db")
+    except PackageNotFoundError:
+        __version__ = "0.0.0+local"
+    del _v, PackageNotFoundError
+except ImportError:  # pragma: no cover — only on ancient Pythons
+    __version__ = "0.0.0+local"
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Timestamp: "2025-07-16 12:49:57 (ywatanabe)"
