@@ -1,3 +1,9 @@
+---
+name: quick-start
+description: Quick Start — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # Quick Start
 
 ## SQLite3 — context-managed

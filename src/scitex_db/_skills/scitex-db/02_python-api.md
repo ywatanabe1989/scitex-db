@@ -1,3 +1,9 @@
+---
+name: python-api
+description: Python API — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # Python API
 
 Everything re-exported from top-level `scitex_db` / `scitex.db`.
