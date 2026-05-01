@@ -1,3 +1,9 @@
+---
+name: cli-reference
+description: CLI Reference — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # CLI Reference
 
 `scitex-db` ships a console entry point declared in `pyproject.toml`:

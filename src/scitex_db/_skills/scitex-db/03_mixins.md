@@ -1,3 +1,9 @@
+---
+name: mixins
+description: Mixin Architecture — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # Mixin Architecture
 
 `SQLite3` and `PostgreSQL` are each composed from twelve mixins in the

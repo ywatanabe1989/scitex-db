@@ -1,3 +1,9 @@
+---
+name: maintenance
+description: Maintenance Helpers — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # Maintenance Helpers
 
 Standalone functions that operate on a database path (SQLite3) or

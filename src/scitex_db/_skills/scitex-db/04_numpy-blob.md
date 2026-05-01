@@ -1,3 +1,9 @@
+---
+name: numpy-blob
+description: Numpy BLOB Storage — see file body for details.
+tags: [scitex-db, scitex-package]
+---
+
 # Numpy BLOB Storage
 
 The `_BaseBlobMixin` lets you stash ndarrays directly as BLOB columns

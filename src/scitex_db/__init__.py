@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 try:
     from importlib.metadata import version as _v, PackageNotFoundError
     try:
@@ -36,6 +38,7 @@ from ._inspect import inspect
 from ._check_health import check_health, batch_health_check
 
 __all__ = [
+    "__version__",
     "PostgreSQL",
     "SQLite3",
     "delete_duplicates",
