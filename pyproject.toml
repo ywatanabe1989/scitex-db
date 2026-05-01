@@ -81,6 +81,7 @@ scitex-db = "scitex_db"
 Homepage = "https://github.com/ywatanabe1989/scitex-db"
 Repository = "https://github.com/ywatanabe1989/scitex-db.git"
 Issues = "https://github.com/ywatanabe1989/scitex-db/issues"
+Documentation = "https://scitex-db.readthedocs.io"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scitex_db"]
