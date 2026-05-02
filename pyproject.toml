@@ -35,6 +35,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "click>=8.0",
     "numpy",
     "pandas",
     "scitex-core>=0.1.0",
