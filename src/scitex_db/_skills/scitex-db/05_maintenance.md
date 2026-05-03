@@ -1,8 +1,10 @@
 ---
-name: maintenance
-description: Maintenance Helpers — see file body for details.
-tags: [scitex-db, scitex-package]
+description: |
+  [TOPIC] Maintenance
+  [DETAILS] See file body for details.
+tags: [scitex-db-maintenance, scitex-db]
 ---
+
 
 # Maintenance Helpers
 

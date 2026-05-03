@@ -1,8 +1,10 @@
 ---
-name: quick-start
-description: Quick Start — see file body for details.
-tags: [scitex-db, scitex-package]
+description: |
+  [TOPIC] Quick Start
+  [DETAILS] See file body for details.
+tags: [scitex-db-quick-start, scitex-db]
 ---
+
 
 # Quick Start
 

@@ -1,8 +1,10 @@
 ---
-name: numpy-blob
-description: Numpy BLOB Storage — see file body for details.
-tags: [scitex-db, scitex-package]
+description: |
+  [TOPIC] Numpy Blob
+  [DETAILS] See file body for details.
+tags: [scitex-db-numpy-blob, scitex-db]
 ---
+
 
 # Numpy BLOB Storage
 

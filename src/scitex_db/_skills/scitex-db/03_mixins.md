@@ -1,8 +1,10 @@
 ---
-name: mixins
-description: Mixin Architecture — see file body for details.
-tags: [scitex-db, scitex-package]
+description: |
+  [TOPIC] Mixins
+  [DETAILS] See file body for details.
+tags: [scitex-db-mixins, scitex-db]
 ---
+
 
 # Mixin Architecture
 
