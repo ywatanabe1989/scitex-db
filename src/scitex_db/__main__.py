@@ -203,3 +203,14 @@ def list_python_apis(as_json):
 
 if __name__ == "__main__":
     sys.exit(main() or 0)
+
+
+# audit §4 — inject version into root --help
+try:
+    from importlib.metadata import version as _v
+    main.help = (
+        f"scitex-db (v{_v('scitex-db')}) — "
+        + (main.help or "").lstrip()
+    )
+except Exception:
+    pass
