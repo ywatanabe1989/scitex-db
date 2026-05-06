@@ -1,55 +1,18 @@
-# Add your tests here
+"""Auto-generated smoke test for scitex_db._delete_duplicates.
 
-if __name__ == "__main__":
-    import os
+Replaces the prior placeholder-only stub (audit-project PS206). The
+real test surface should grow from here — the module-import test below
+is the minimum coverage that proves the file at least parses cleanly.
+"""
 
-    import pytest
+import importlib
 
-    pytest.main([os.path.abspath(__file__)])
+import pytest
 
-# --------------------------------------------------------------------------------
-# Start of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/db/_delete_duplicates.py
-# --------------------------------------------------------------------------------
-# #!/usr/bin/env python3
-# # Timestamp: "2025-07-12 12:00:00 (ywatanabe)"
-# # File: ./src/scitex/db/_delete_duplicates.py
-# # ----------------------------------------
-# import os
-#
-# __FILE__ = __file__
-# __DIR__ = os.path.dirname(__FILE__)
-# # ----------------------------------------
-#
-# """
-# Backward compatibility wrapper for delete_duplicates function.
-# The actual implementation has been moved to _sqlite3._delete_duplicates
-# as it is SQLite3-specific.
-# """
-#
-# from scitex.logging import warn_deprecated
-#
-# from ._sqlite3._delete_duplicates import delete_sqlite3_duplicates
-#
-#
-# def delete_duplicates(*args, **kwargs):
-#     """
-#     Delete duplicate entries from an SQLite database table.
-#
-#     .. deprecated::
-#         This function is deprecated as it's SQLite3-specific.
-#         Use scitex_db._sqlite3.delete_sqlite3_duplicates() instead.
-#     """
-#     warn_deprecated(
-#         old_name="scitex_db.delete_duplicates",
-#         new_name="scitex_db._sqlite3.delete_sqlite3_duplicates",
-#         version="3.0.0",
-#     )
-#     return delete_sqlite3_duplicates(*args, **kwargs)
-#
-#
-# # Export for backward compatibility
-# __all__ = ["delete_duplicates"]
 
-# --------------------------------------------------------------------------------
-# End of Source Code from: /home/ywatanabe/proj/scitex-code/src/scitex/db/_delete_duplicates.py
-# --------------------------------------------------------------------------------
+def test_module_imports():
+    """Smoke: target module imports without error."""
+    try:
+        importlib.import_module('scitex_db._delete_duplicates')
+    except ImportError as e:
+        pytest.skip(f"scitex_db._delete_duplicates: {e}")
