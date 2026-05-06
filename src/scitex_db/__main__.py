@@ -201,6 +201,13 @@ def list_python_apis(as_json):
             click.echo(a)
 
 
+
+# audit-cli §1a — packages with _skills/ MUST expose
+# `<cli> skills {list,get,install}`.
+from ._skills import skills_group as _skills_group
+
+main.add_command(_skills_group, name="skills")
+
 if __name__ == "__main__":
     sys.exit(main() or 0)
 
